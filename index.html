@@ -1,21 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIMLABS WEB - Cyber Aim Trainer</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AIMLABS WEB - Train Your AIM</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body class="w-full h-full relative">
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="w-full h-full relative">
     <!-- 3D Render Canvas -->
     <canvas id="game-canvas"></canvas>
 
@@ -23,1124 +28,1612 @@
     <canvas id="crosshair-canvas" width="100" height="100"></canvas>
 
     <!-- HUD Overlay (Visible during gameplay) -->
-    <div id="hud-overlay" class="hidden absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6">
-        <!-- Top Stats Header -->
-        <div class="flex justify-between items-start">
-            <div class="glass-panel px-6 py-3 rounded-xl flex items-center gap-8 border-l-4 border-l-cyan-400">
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold tracking-wider">SCORE</div>
-                    <div id="hud-score" class="text-3xl font-orbitron font-bold text-cyan-400 glow-text-cyan">0</div>
-                </div>
-                <div class="h-8 w-[1px] bg-slate-700"></div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold tracking-wider">ACCURACY</div>
-                    <div id="hud-accuracy" class="text-3xl font-orbitron font-bold text-white">100%</div>
-                </div>
-                <div class="h-8 w-[1px] bg-slate-700"></div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold tracking-wider">KPS</div>
-                    <div id="hud-kps" class="text-3xl font-orbitron font-bold text-pink-400">0.0</div>
-                </div>
+    <div
+      id="hud-overlay"
+      class="hidden absolute inset-0 pointer-events-none z-10 flex flex-col justify-between p-6"
+    >
+      <!-- Top Stats Header -->
+      <div class="flex justify-between items-start">
+        <div
+          class="glass-panel px-6 py-3 rounded-xl flex items-center gap-8 border-l-4 border-l-cyan-400"
+        >
+          <div>
+            <div class="text-xs text-slate-400 font-semibold tracking-wider">
+              SCORE
             </div>
-
-            <!-- Mode Title & Timer -->
-            <div class="glass-panel px-8 py-3 rounded-xl text-center border-t-2 border-cyan-400">
-                <div id="hud-mode-name" class="text-xs text-cyan-400 font-bold uppercase tracking-widest font-orbitron mb-1">GRIDSHOT</div>
-                <div id="hud-timer" class="text-4xl font-orbitron font-extrabold text-white">60.0s</div>
+            <div
+              id="hud-score"
+              class="text-3xl font-orbitron font-bold text-cyan-400 glow-text-cyan"
+            >
+              0
             </div>
-
-            <!-- Weapon / Status Indicator -->
-            <div class="glass-panel px-6 py-3 rounded-xl flex items-center gap-6 border-r-4 border-r-pink-500">
-                <div class="text-right">
-                    <div class="text-xs text-slate-400 font-semibold tracking-wider">AVG REACT TIME</div>
-                    <div id="hud-reaction" class="text-2xl font-orbitron font-bold text-cyan-300">0 ms</div>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-500/40 text-pink-400">
-                    <i class="fa-solid fa-crosshairs text-xl"></i>
-                </div>
+          </div>
+          <div class="h-8 w-[1px] bg-slate-700"></div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold tracking-wider">
+              ACCURACY
             </div>
+            <div
+              id="hud-accuracy"
+              class="text-3xl font-orbitron font-bold text-white"
+            >
+              100%
+            </div>
+          </div>
+          <div class="h-8 w-[1px] bg-slate-700"></div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold tracking-wider">
+              KPS
+            </div>
+            <div
+              id="hud-kps"
+              class="text-3xl font-orbitron font-bold text-pink-400"
+            >
+              0.0
+            </div>
+          </div>
         </div>
 
-        <!-- Dynamic Hit Marker Effect Overlay inside Canvas -->
-        <div class="flex justify-center mb-4">
-            <div class="text-xs text-slate-400/60 font-orbitron tracking-widest">PRESS [ESC] TO PAUSE / MENU</div>
+        <!-- Mode Title & Timer -->
+        <div
+          class="glass-panel px-8 py-3 rounded-xl text-center border-t-2 border-cyan-400"
+        >
+          <div
+            id="hud-mode-name"
+            class="text-xs text-cyan-400 font-bold uppercase tracking-widest font-orbitron mb-1"
+          >
+            GRIDSHOT
+          </div>
+          <div
+            id="hud-timer"
+            class="text-4xl font-orbitron font-extrabold text-white"
+          >
+            60.0s
+          </div>
         </div>
+
+        <!-- Weapon / Status Indicator -->
+        <div
+          class="glass-panel px-6 py-3 rounded-xl flex items-center gap-6 border-r-4 border-r-pink-500"
+        >
+          <div class="text-right">
+            <div class="text-xs text-slate-400 font-semibold tracking-wider">
+              AVG REACT TIME
+            </div>
+            <div
+              id="hud-reaction"
+              class="text-2xl font-orbitron font-bold text-cyan-300"
+            >
+              0 ms
+            </div>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-500/40 text-pink-400"
+          >
+            <i class="fa-solid fa-crosshairs text-xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Hit Marker Effect Overlay inside Canvas -->
+      <div class="flex justify-center mb-4">
+        <div class="text-xs text-slate-400/60 font-orbitron tracking-widest">
+          PRESS [ESC] TO PAUSE / MENU
+        </div>
+      </div>
     </div>
 
     <!-- MAIN MENU OVERLAY -->
-    <div id="main-menu" class="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-        <div class="w-full max-w-5xl h-[90vh] glass-panel rounded-2xl flex flex-col shadow-2xl border border-cyan-500/30 overflow-hidden">
-            <!-- Header -->
-            <div class="px-8 py-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/50">
-                        <i class="fa-solid fa-bolt text-slate-950 text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-orbitron font-black tracking-wider text-white">AIMLABS <span class="text-cyan-400">WEB</span></h1>
-                        <p class="text-xs text-slate-400">HIGH-PERFORMANCE BROWSER 3D AIM TRAINER</p>
-                    </div>
-                </div>
-                <!-- Navigation Tabs -->
-                <div class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
-                    <button id="tab-play" class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider transition-all bg-cyan-500 text-slate-950 shadow-md">TRAIN</button>
-                    <button id="tab-settings" class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all">SETTINGS</button>
-                    <button id="tab-scores" class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all">LEADERBOARD</button>
-                </div>
+    <div
+      id="main-menu"
+      class="absolute inset-0 z-30 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
+    >
+      <div
+        class="w-full max-w-5xl h-[90vh] glass-panel rounded-2xl flex flex-col shadow-2xl border border-cyan-500/30 overflow-hidden"
+      >
+        <!-- Header -->
+        <div
+          class="px-8 py-5 border-b border-slate-800 flex justify-between items-center bg-slate-900/50"
+        >
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-lg bg-cyan-500 flex items-center justify-center shadow-lg shadow-cyan-500/50"
+            >
+              <i class="fa-solid fa-bolt text-slate-950 text-xl"></i>
             </div>
-
-            <!-- Tab Content Container -->
-            <div class="flex-1 overflow-y-auto p-8">
-                <!-- 1. TRAIN / PLAY TAB -->
-                <div id="content-play" class="space-y-6">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-xl font-orbitron font-bold text-white">SELECT TRAINING TASK</h2>
-                            <p class="text-sm text-slate-400">Choose a scenario to sharpen your flicking, precision, tracking, or reaction time.</p>
-                        </div>
-                    </div>
-
-                    <!-- Game Mode Cards Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Gridshot Card -->
-                        <div class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-cyan-500/60 transition-all duration-300 relative overflow-hidden" data-mode="gridshot">
-                            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all"></div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-border-all"></i>
-                                </div>
-                                <span class="text-xs font-orbitron px-3 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-full font-bold">FLICKING</span>
-                            </div>
-                            <h3 class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">GRIDSHOT</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-4">3 targets remain on screen simultaneously. Instant respawn upon destruction. Perfect for warming up flick speed and muscle memory.</p>
-                            <div class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60">
-                                <span>Duration: 60s</span>
-                                <span class="text-cyan-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">PLAY TASK <i class="fa-solid fa-arrow-right"></i></span>
-                            </div>
-                        </div>
-
-                        <!-- Microflex Card -->
-                        <div class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-pink-500/60 transition-all duration-300 relative overflow-hidden" data-mode="microflex">
-                            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-all"></div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-xl group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-compress-arrows-alt"></i>
-                                </div>
-                                <span class="text-xs font-orbitron px-3 py-1 bg-pink-500/10 text-pink-400 border border-pink-500/20 rounded-full font-bold">PRECISION</span>
-                            </div>
-                            <h3 class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-pink-400 transition-colors">MICROFLEX</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-4">Small targets spawn in tight clusters. Demands pinpoint precision, subtle micro-adjustments, and steady cursor placement.</p>
-                            <div class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60">
-                                <span>Duration: 60s</span>
-                                <span class="text-pink-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">PLAY TASK <i class="fa-solid fa-arrow-right"></i></span>
-                            </div>
-                        </div>
-
-                        <!-- Sphere Track Card -->
-                        <div class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-purple-500/60 transition-all duration-300 relative overflow-hidden" data-mode="tracking">
-                            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-arrows-spin"></i>
-                                </div>
-                                <span class="text-xs font-orbitron px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full font-bold">SMOOTHNESS</span>
-                            </div>
-                            <h3 class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-purple-400 transition-colors">SPHERE TRACK</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-4">A glowing target moves smoothly along unpredictable 3D vector paths. Continuously track to deplete target HP and score points.</p>
-                            <div class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60">
-                                <span>Duration: 60s</span>
-                                <span class="text-purple-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">PLAY TASK <i class="fa-solid fa-arrow-right"></i></span>
-                            </div>
-                        </div>
-
-                        <!-- Reflex Card -->
-                        <div class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-emerald-500/60 transition-all duration-300 relative overflow-hidden" data-mode="reflex">
-                            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"></div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl group-hover:scale-110 transition-transform">
-                                    <i class="fa-solid fa-bolt-lightning"></i>
-                                </div>
-                                <span class="text-xs font-orbitron px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-bold">REACTION</span>
-                            </div>
-                            <h3 class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">REFLEX</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed mb-4">Single targets appear for brief windows at randomized spatial coordinates. Test raw visual reaction time and snap accuracy.</p>
-                            <div class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60">
-                                <span>Duration: 60s</span>
-                                <span class="text-emerald-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">PLAY TASK <i class="fa-solid fa-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. SETTINGS TAB -->
-                <div id="content-settings" class="hidden space-y-8 max-w-3xl mx-auto">
-                    <!-- Sensitivity Section -->
-                    <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-6">
-                        <h3 class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2">
-                            <i class="fa-solid fa-sliders"></i> MOUSE & SENSITIVITY CONVERTER
-                        </h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-2">GAME PRESET CONVERTER</label>
-                                <select id="setting-preset" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
-                                    <option value="custom">Custom Sensitivity</option>
-                                    <option value="valorant">Valorant</option>
-                                    <option value="csgo">CS:GO / Apex Legends / Source</option>
-                                    <option value="overwatch">Overwatch / Call of Duty</option>
-                                    <option value="rainbow">Rainbow Six Siege</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-2">GAME SENSITIVITY VALUE</label>
-                                <input type="number" id="setting-game-sens" step="0.01" value="0.5" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-2">
-                                <span class="text-slate-300">EFFECTIVE AIM SENSITIVITY</span>
-                                <span id="val-sens" class="text-cyan-400 font-orbitron">1.50</span>
-                            </div>
-                            <input type="range" id="setting-sens" min="0.1" max="5.0" step="0.05" value="1.5" class="w-full accent-cyan-400">
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-2">
-                                <span class="text-slate-300">FIELD OF VIEW (FOV)</span>
-                                <span id="val-fov" class="text-cyan-400 font-orbitron">103°</span>
-                            </div>
-                            <input type="range" id="setting-fov" min="80" max="120" step="1" value="103" class="w-full accent-cyan-400">
-                        </div>
-                    </div>
-
-                    <!-- Target & Visual Customization -->
-                    <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-6">
-                        <h3 class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2">
-                            <i class="fa-solid fa-palette"></i> TARGET & CROSSHAIR CUSTOMIZATION
-                        </h3>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-2">NEON TARGET COLOR</label>
-                                <div class="flex gap-3" id="target-color-picker">
-                                    <button class="w-10 h-10 rounded-lg bg-cyan-400 border-2 border-white ring-2 ring-cyan-400/50" data-color="#00f0ff"></button>
-                                    <button class="w-10 h-10 rounded-lg bg-pink-500 border-2 border-transparent hover:border-white" data-color="#ff007f"></button>
-                                    <button class="w-10 h-10 rounded-lg bg-emerald-400 border-2 border-transparent hover:border-white" data-color="#00ff66"></button>
-                                    <button class="w-10 h-10 rounded-lg bg-yellow-400 border-2 border-transparent hover:border-white" data-color="#ffea00"></button>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-300 mb-2">CROSSHAIR STYLE</label>
-                                <div class="flex gap-4 items-center">
-                                    <label class="flex items-center gap-2 cursor-pointer text-sm">
-                                        <input type="checkbox" id="setting-cross-dot" checked class="accent-cyan-400 rounded"> Center Dot
-                                    </label>
-                                    <label class="flex items-center gap-2 cursor-pointer text-sm">
-                                        <input type="checkbox" id="setting-cross-lines" checked class="accent-cyan-400 rounded"> Crosshair Lines
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs text-slate-400 mb-1">Crosshair Size</label>
-                                <input type="range" id="setting-cross-size" min="4" max="24" value="10" class="w-full accent-cyan-400">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-slate-400 mb-1">Line Thickness</label>
-                                <input type="range" id="setting-cross-thick" min="1" max="6" value="2" class="w-full accent-cyan-400">
-                            </div>
-                            <div>
-                                <label class="block text-xs text-slate-400 mb-1">Gap Size</label>
-                                <input type="range" id="setting-cross-gap" min="1" max="12" value="4" class="w-full accent-cyan-400">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Audio Volume -->
-                    <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-4">
-                        <h3 class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2">
-                            <i class="fa-solid fa-volume-high"></i> AUDIO & HAPTICS
-                        </h3>
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-2">
-                                <span class="text-slate-300">MASTER VOLUME</span>
-                                <span id="val-volume" class="text-cyan-400 font-orbitron">80%</span>
-                            </div>
-                            <input type="range" id="setting-volume" min="0" max="100" value="80" class="w-full accent-cyan-400">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. LEADERBOARD / HIGH SCORES TAB -->
-                <div id="content-scores" class="hidden space-y-6 max-w-4xl mx-auto">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-orbitron font-bold text-white">LOCAL HIGH SCORES</h2>
-                        <button id="btn-clear-scores" class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-orbitron font-semibold">RESET HISTORY</button>
-                    </div>
-
-                    <div class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-                        <table class="w-full text-left text-sm text-slate-300">
-                            <thead class="bg-slate-950 font-orbitron text-xs text-slate-400 border-b border-slate-800">
-                                <tr>
-                                    <th class="p-4">MODE</th>
-                                    <th class="p-4">SCORE</th>
-                                    <th class="p-4">ACCURACY</th>
-                                    <th class="p-4">KPS</th>
-                                    <th class="p-4">RANK RATING</th>
-                                    <th class="p-4">DATE</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboard-body" class="divide-y divide-slate-800/60">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div>
+              <h1
+                class="text-2xl font-orbitron font-black tracking-wider text-white"
+              >
+                AIMLABS <span class="text-cyan-400">WEB</span>
+              </h1>
+              <p class="text-xs text-slate-400">
+                HIGH-PERFORMANCE BROWSER 3D AIM TRAINER
+              </p>
             </div>
+          </div>
+          <!-- Navigation Tabs -->
+          <div
+            class="flex gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800"
+          >
+            <button
+              id="tab-play"
+              class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider transition-all bg-cyan-500 text-slate-950 shadow-md"
+            >
+              TRAIN
+            </button>
+            <button
+              id="tab-settings"
+              class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all"
+            >
+              SETTINGS
+            </button>
+            <button
+              id="tab-scores"
+              class="px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all"
+            >
+              LEADERBOARD
+            </button>
+          </div>
         </div>
+
+        <!-- Tab Content Container -->
+        <div class="flex-1 overflow-y-auto p-8">
+          <!-- 1. TRAIN / PLAY TAB -->
+          <div id="content-play" class="space-y-6">
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-xl font-orbitron font-bold text-white">
+                  SELECT TRAINING TASK
+                </h2>
+                <p class="text-sm text-slate-400">
+                  Choose a scenario to sharpen your flicking, precision,
+                  tracking, or reaction time.
+                </p>
+              </div>
+            </div>
+
+            <!-- Game Mode Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Gridshot Card -->
+              <div
+                class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-cyan-500/60 transition-all duration-300 relative overflow-hidden"
+                data-mode="gridshot"
+              >
+                <div
+                  class="absolute -right-8 -bottom-8 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl group-hover:bg-cyan-500/20 transition-all"
+                ></div>
+                <div class="flex justify-between items-start mb-4">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xl group-hover:scale-110 transition-transform"
+                  >
+                    <i class="fa-solid fa-border-all"></i>
+                  </div>
+                  <span
+                    class="text-xs font-orbitron px-3 py-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-full font-bold"
+                    >FLICKING</span
+                  >
+                </div>
+                <h3
+                  class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors"
+                >
+                  GRIDSHOT
+                </h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  3 targets remain on screen simultaneously. Instant respawn
+                  upon destruction. Perfect for warming up flick speed and
+                  muscle memory.
+                </p>
+                <div
+                  class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60"
+                >
+                  <span>Duration: 60s</span>
+                  <span
+                    class="text-cyan-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1"
+                    >PLAY TASK <i class="fa-solid fa-arrow-right"></i
+                  ></span>
+                </div>
+              </div>
+
+              <!-- Microflex Card -->
+              <div
+                class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-pink-500/60 transition-all duration-300 relative overflow-hidden"
+                data-mode="microflex"
+              >
+                <div
+                  class="absolute -right-8 -bottom-8 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-all"
+                ></div>
+                <div class="flex justify-between items-start mb-4">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 text-xl group-hover:scale-110 transition-transform"
+                  >
+                    <i class="fa-solid fa-compress-arrows-alt"></i>
+                  </div>
+                  <span
+                    class="text-xs font-orbitron px-3 py-1 bg-pink-500/10 text-pink-400 border border-pink-500/20 rounded-full font-bold"
+                    >PRECISION</span
+                  >
+                </div>
+                <h3
+                  class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-pink-400 transition-colors"
+                >
+                  MICROFLEX
+                </h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  Small targets spawn in tight clusters. Demands pinpoint
+                  precision, subtle micro-adjustments, and steady cursor
+                  placement.
+                </p>
+                <div
+                  class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60"
+                >
+                  <span>Duration: 60s</span>
+                  <span
+                    class="text-pink-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1"
+                    >PLAY TASK <i class="fa-solid fa-arrow-right"></i
+                  ></span>
+                </div>
+              </div>
+
+              <!-- Sphere Track Card -->
+              <div
+                class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-purple-500/60 transition-all duration-300 relative overflow-hidden"
+                data-mode="tracking"
+              >
+                <div
+                  class="absolute -right-8 -bottom-8 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"
+                ></div>
+                <div class="flex justify-between items-start mb-4">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl group-hover:scale-110 transition-transform"
+                  >
+                    <i class="fa-solid fa-arrows-spin"></i>
+                  </div>
+                  <span
+                    class="text-xs font-orbitron px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full font-bold"
+                    >SMOOTHNESS</span
+                  >
+                </div>
+                <h3
+                  class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-purple-400 transition-colors"
+                >
+                  SPHERE TRACK
+                </h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  A glowing target moves smoothly along unpredictable 3D vector
+                  paths. Continuously track to deplete target HP and score
+                  points.
+                </p>
+                <div
+                  class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60"
+                >
+                  <span>Duration: 60s</span>
+                  <span
+                    class="text-purple-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1"
+                    >PLAY TASK <i class="fa-solid fa-arrow-right"></i
+                  ></span>
+                </div>
+              </div>
+
+              <!-- Reflex Card -->
+              <div
+                class="mode-card cursor-pointer group rounded-xl p-6 bg-slate-900/60 border border-slate-800 hover:border-emerald-500/60 transition-all duration-300 relative overflow-hidden"
+                data-mode="reflex"
+              >
+                <div
+                  class="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all"
+                ></div>
+                <div class="flex justify-between items-start mb-4">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl group-hover:scale-110 transition-transform"
+                  >
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                  </div>
+                  <span
+                    class="text-xs font-orbitron px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-bold"
+                    >REACTION</span
+                  >
+                </div>
+                <h3
+                  class="text-lg font-orbitron font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors"
+                >
+                  REFLEX
+                </h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  Single targets appear for brief windows at randomized spatial
+                  coordinates. Test raw visual reaction time and snap accuracy.
+                </p>
+                <div
+                  class="flex justify-between items-center text-xs text-slate-500 pt-3 border-t border-slate-800/60"
+                >
+                  <span>Duration: 60s</span>
+                  <span
+                    class="text-emerald-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1"
+                    >PLAY TASK <i class="fa-solid fa-arrow-right"></i
+                  ></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. SETTINGS TAB -->
+          <div id="content-settings" class="hidden space-y-8 max-w-3xl mx-auto">
+            <!-- Sensitivity Section -->
+            <div
+              class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-6"
+            >
+              <h3
+                class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-sliders"></i> MOUSE & SENSITIVITY
+                CONVERTER
+              </h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-2"
+                    >GAME PRESET CONVERTER</label
+                  >
+                  <select
+                    id="setting-preset"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
+                  >
+                    <option value="custom">Custom Sensitivity</option>
+                    <option value="valorant">Valorant</option>
+                    <option value="csgo">CS:GO / Apex Legends / Source</option>
+                    <option value="overwatch">Overwatch / Call of Duty</option>
+                    <option value="rainbow">Rainbow Six Siege</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-2"
+                    >GAME SENSITIVITY VALUE</label
+                  >
+                  <input
+                    type="number"
+                    id="setting-game-sens"
+                    step="0.01"
+                    value="0.5"
+                    class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-2">
+                  <span class="text-slate-300">EFFECTIVE AIM SENSITIVITY</span>
+                  <span id="val-sens" class="text-cyan-400 font-orbitron"
+                    >1.50</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="setting-sens"
+                  min="0.1"
+                  max="5.0"
+                  step="0.05"
+                  value="1.5"
+                  class="w-full accent-cyan-400"
+                />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-2">
+                  <span class="text-slate-300">FIELD OF VIEW (FOV)</span>
+                  <span id="val-fov" class="text-cyan-400 font-orbitron"
+                    >103°</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="setting-fov"
+                  min="80"
+                  max="120"
+                  step="1"
+                  value="103"
+                  class="w-full accent-cyan-400"
+                />
+              </div>
+            </div>
+
+            <!-- Target & Visual Customization -->
+            <div
+              class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-6"
+            >
+              <h3
+                class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-palette"></i> TARGET & CROSSHAIR
+                CUSTOMIZATION
+              </h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-2"
+                    >NEON TARGET COLOR</label
+                  >
+                  <div class="flex gap-3" id="target-color-picker">
+                    <button
+                      class="w-10 h-10 rounded-lg bg-cyan-400 border-2 border-white ring-2 ring-cyan-400/50"
+                      data-color="#00f0ff"
+                    ></button>
+                    <button
+                      class="w-10 h-10 rounded-lg bg-pink-500 border-2 border-transparent hover:border-white"
+                      data-color="#ff007f"
+                    ></button>
+                    <button
+                      class="w-10 h-10 rounded-lg bg-emerald-400 border-2 border-transparent hover:border-white"
+                      data-color="#00ff66"
+                    ></button>
+                    <button
+                      class="w-10 h-10 rounded-lg bg-yellow-400 border-2 border-transparent hover:border-white"
+                      data-color="#ffea00"
+                    ></button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-2"
+                    >CROSSHAIR STYLE</label
+                  >
+                  <div class="flex gap-4 items-center">
+                    <label
+                      class="flex items-center gap-2 cursor-pointer text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        id="setting-cross-dot"
+                        checked
+                        class="accent-cyan-400 rounded"
+                      />
+                      Center Dot
+                    </label>
+                    <label
+                      class="flex items-center gap-2 cursor-pointer text-sm"
+                    >
+                      <input
+                        type="checkbox"
+                        id="setting-cross-lines"
+                        checked
+                        class="accent-cyan-400 rounded"
+                      />
+                      Crosshair Lines
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1"
+                    >Crosshair Size</label
+                  >
+                  <input
+                    type="range"
+                    id="setting-cross-size"
+                    min="4"
+                    max="24"
+                    value="10"
+                    class="w-full accent-cyan-400"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1"
+                    >Line Thickness</label
+                  >
+                  <input
+                    type="range"
+                    id="setting-cross-thick"
+                    min="1"
+                    max="6"
+                    value="2"
+                    class="w-full accent-cyan-400"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-400 mb-1"
+                    >Gap Size</label
+                  >
+                  <input
+                    type="range"
+                    id="setting-cross-gap"
+                    min="1"
+                    max="12"
+                    value="4"
+                    class="w-full accent-cyan-400"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Audio Volume -->
+            <div
+              class="bg-slate-900/60 border border-slate-800 p-6 rounded-xl space-y-4"
+            >
+              <h3
+                class="text-lg font-orbitron font-bold text-cyan-400 flex items-center gap-2"
+              >
+                <i class="fa-solid fa-volume-high"></i> AUDIO & HAPTICS
+              </h3>
+              <div>
+                <div class="flex justify-between text-xs font-semibold mb-2">
+                  <span class="text-slate-300">MASTER VOLUME</span>
+                  <span id="val-volume" class="text-cyan-400 font-orbitron"
+                    >80%</span
+                  >
+                </div>
+                <input
+                  type="range"
+                  id="setting-volume"
+                  min="0"
+                  max="100"
+                  value="80"
+                  class="w-full accent-cyan-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. LEADERBOARD / HIGH SCORES TAB -->
+          <div id="content-scores" class="hidden space-y-6 max-w-4xl mx-auto">
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-orbitron font-bold text-white">
+                LOCAL HIGH SCORES
+              </h2>
+              <button
+                id="btn-clear-scores"
+                class="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg text-xs font-orbitron font-semibold"
+              >
+                RESET HISTORY
+              </button>
+            </div>
+
+            <div
+              class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50"
+            >
+              <table class="w-full text-left text-sm text-slate-300">
+                <thead
+                  class="bg-slate-950 font-orbitron text-xs text-slate-400 border-b border-slate-800"
+                >
+                  <tr>
+                    <th class="p-4">MODE</th>
+                    <th class="p-4">SCORE</th>
+                    <th class="p-4">ACCURACY</th>
+                    <th class="p-4">KPS</th>
+                    <th class="p-4">RANK RATING</th>
+                    <th class="p-4">DATE</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="leaderboard-body"
+                  class="divide-y divide-slate-800/60"
+                >
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- POST GAME SUMMARY MODAL -->
-    <div id="summary-modal" class="hidden absolute inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-lg">
-        <div class="w-full max-w-4xl glass-panel rounded-2xl p-8 border border-cyan-500/40 space-y-6 shadow-2xl">
-            <!-- Summary Header -->
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <div>
-                    <span class="text-xs font-orbitron text-cyan-400 tracking-widest uppercase">TASK COMPLETED</span>
-                    <h2 id="summary-mode-title" class="text-3xl font-orbitron font-black text-white">GRIDSHOT</h2>
-                </div>
-                <!-- Dynamic Rank Badge -->
-                <div class="flex items-center gap-3 bg-slate-900/80 border border-slate-700 px-5 py-2 rounded-xl">
-                    <div id="rank-icon" class="text-3xl text-yellow-400"><i class="fa-solid fa-trophy"></i></div>
-                    <div>
-                        <div class="text-[10px] text-slate-400 font-orbitron tracking-wider">PERFORMANCE RANK</div>
-                        <div id="rank-title" class="text-lg font-orbitron font-bold text-yellow-400">DIAMOND I</div>
-                    </div>
-                </div>
+    <div
+      id="summary-modal"
+      class="hidden absolute inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-lg"
+    >
+      <div
+        class="w-full max-w-4xl glass-panel rounded-2xl p-8 border border-cyan-500/40 space-y-6 shadow-2xl"
+      >
+        <!-- Summary Header -->
+        <div
+          class="flex justify-between items-center border-b border-slate-800 pb-4"
+        >
+          <div>
+            <span
+              class="text-xs font-orbitron text-cyan-400 tracking-widest uppercase"
+              >TASK COMPLETED</span
+            >
+            <h2
+              id="summary-mode-title"
+              class="text-3xl font-orbitron font-black text-white"
+            >
+              GRIDSHOT
+            </h2>
+          </div>
+          <!-- Dynamic Rank Badge -->
+          <div
+            class="flex items-center gap-3 bg-slate-900/80 border border-slate-700 px-5 py-2 rounded-xl"
+          >
+            <div id="rank-icon" class="text-3xl text-yellow-400">
+              <i class="fa-solid fa-trophy"></i>
             </div>
-
-            <!-- Main Stats Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-                    <div class="text-xs text-slate-400 font-semibold">FINAL SCORE</div>
-                    <div id="sum-score" class="text-3xl font-orbitron font-bold text-cyan-400 mt-1">68,420</div>
-                </div>
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-                    <div class="text-xs text-slate-400 font-semibold">ACCURACY</div>
-                    <div id="sum-accuracy" class="text-3xl font-orbitron font-bold text-white mt-1">94.2%</div>
-                </div>
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-                    <div class="text-xs text-slate-400 font-semibold">KILLS / SEC</div>
-                    <div id="sum-kps" class="text-3xl font-orbitron font-bold text-pink-400 mt-1">3.12</div>
-                </div>
-                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center">
-                    <div class="text-xs text-slate-400 font-semibold">AVG REACT TIME</div>
-                    <div id="sum-ttk" class="text-3xl font-orbitron font-bold text-emerald-400 mt-1">285 ms</div>
-                </div>
+            <div>
+              <div
+                class="text-[10px] text-slate-400 font-orbitron tracking-wider"
+              >
+                PERFORMANCE RANK
+              </div>
+              <div
+                id="rank-title"
+                class="text-lg font-orbitron font-bold text-yellow-400"
+              >
+                DIAMOND I
+              </div>
             </div>
-
-            <!-- Advanced Analytics: Heatmap & Accuracy breakdown -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Spatial Spatial Hit Heatmap Canvas -->
-                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
-                    <div class="text-xs font-orbitron font-bold text-slate-300 mb-3 flex items-center justify-between">
-                        <span>TARGET HIT DISTRIBUTION HEATMAP</span>
-                        <span class="text-[10px] text-slate-500 font-normal">Spatial Placement Accuracy</span>
-                    </div>
-                    <div class="relative w-full aspect-video bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800/80 overflow-hidden">
-                        <canvas id="heatmap-canvas" width="360" height="200" class="w-full h-full"></canvas>
-                    </div>
-                </div>
-
-                <!-- Score Breakdown Stats -->
-                <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
-                    <div class="text-xs font-orbitron font-bold text-slate-300 mb-3">PERFORMANCE BREAKDOWN</div>
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                            <span class="text-slate-400">Total Shots Fired:</span>
-                            <span id="sum-shots" class="font-orbitron font-bold text-white">120</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                            <span class="text-slate-400">Targets Destroyed:</span>
-                            <span id="sum-hits" class="font-orbitron font-bold text-cyan-400">113</span>
-                        </div>
-                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                            <span class="text-slate-400">Missed Shots:</span>
-                            <span id="sum-misses" class="font-orbitron font-bold text-red-400">7</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-slate-400">Target Hit Consistency:</span>
-                            <span id="sum-consistency" class="font-orbitron font-bold text-purple-400">98.5%</span>
-                        </div>
-                    </div>
-                    <div class="pt-4">
-                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                            <div id="sum-acc-bar" class="bg-gradient-to-r from-cyan-400 to-pink-500 h-full w-0 transition-all duration-1000"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Summary Action Buttons -->
-            <div class="flex gap-4 pt-2">
-                <button id="btn-replay" class="flex-1 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-orbitron font-bold rounded-xl shadow-lg shadow-cyan-500/30 transition-all">
-                    REPLAY TASK
-                </button>
-                <button id="btn-summary-menu" class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-orbitron font-bold rounded-xl transition-all">
-                    MAIN MENU
-                </button>
-            </div>
+          </div>
         </div>
+
+        <!-- Main Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div
+            class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center"
+          >
+            <div class="text-xs text-slate-400 font-semibold">FINAL SCORE</div>
+            <div
+              id="sum-score"
+              class="text-3xl font-orbitron font-bold text-cyan-400 mt-1"
+            >
+              68,420
+            </div>
+          </div>
+          <div
+            class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center"
+          >
+            <div class="text-xs text-slate-400 font-semibold">ACCURACY</div>
+            <div
+              id="sum-accuracy"
+              class="text-3xl font-orbitron font-bold text-white mt-1"
+            >
+              94.2%
+            </div>
+          </div>
+          <div
+            class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center"
+          >
+            <div class="text-xs text-slate-400 font-semibold">KILLS / SEC</div>
+            <div
+              id="sum-kps"
+              class="text-3xl font-orbitron font-bold text-pink-400 mt-1"
+            >
+              3.12
+            </div>
+          </div>
+          <div
+            class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 text-center"
+          >
+            <div class="text-xs text-slate-400 font-semibold">
+              AVG REACT TIME
+            </div>
+            <div
+              id="sum-ttk"
+              class="text-3xl font-orbitron font-bold text-emerald-400 mt-1"
+            >
+              285 ms
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Analytics: Heatmap & Accuracy breakdown -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Spatial Spatial Hit Heatmap Canvas -->
+          <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+            <div
+              class="text-xs font-orbitron font-bold text-slate-300 mb-3 flex items-center justify-between"
+            >
+              <span>TARGET HIT DISTRIBUTION HEATMAP</span>
+              <span class="text-[10px] text-slate-500 font-normal"
+                >Spatial Placement Accuracy</span
+              >
+            </div>
+            <div
+              class="relative w-full aspect-video bg-slate-950 rounded-lg flex items-center justify-center border border-slate-800/80 overflow-hidden"
+            >
+              <canvas
+                id="heatmap-canvas"
+                width="360"
+                height="200"
+                class="w-full h-full"
+              ></canvas>
+            </div>
+          </div>
+
+          <!-- Score Breakdown Stats -->
+          <div
+            class="bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col justify-between"
+          >
+            <div class="text-xs font-orbitron font-bold text-slate-300 mb-3">
+              PERFORMANCE BREAKDOWN
+            </div>
+            <div class="space-y-3 text-sm">
+              <div
+                class="flex justify-between items-center border-b border-slate-800 pb-2"
+              >
+                <span class="text-slate-400">Total Shots Fired:</span>
+                <span id="sum-shots" class="font-orbitron font-bold text-white"
+                  >120</span
+                >
+              </div>
+              <div
+                class="flex justify-between items-center border-b border-slate-800 pb-2"
+              >
+                <span class="text-slate-400">Targets Destroyed:</span>
+                <span
+                  id="sum-hits"
+                  class="font-orbitron font-bold text-cyan-400"
+                  >113</span
+                >
+              </div>
+              <div
+                class="flex justify-between items-center border-b border-slate-800 pb-2"
+              >
+                <span class="text-slate-400">Missed Shots:</span>
+                <span
+                  id="sum-misses"
+                  class="font-orbitron font-bold text-red-400"
+                  >7</span
+                >
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-400">Target Hit Consistency:</span>
+                <span
+                  id="sum-consistency"
+                  class="font-orbitron font-bold text-purple-400"
+                  >98.5%</span
+                >
+              </div>
+            </div>
+            <div class="pt-4">
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div
+                  id="sum-acc-bar"
+                  class="bg-gradient-to-r from-cyan-400 to-pink-500 h-full w-0 transition-all duration-1000"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary Action Buttons -->
+        <div class="flex gap-4 pt-2">
+          <button
+            id="btn-replay"
+            class="flex-1 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-orbitron font-bold rounded-xl shadow-lg shadow-cyan-500/30 transition-all"
+          >
+            REPLAY TASK
+          </button>
+          <button
+            id="btn-summary-menu"
+            class="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-orbitron font-bold rounded-xl transition-all"
+          >
+            MAIN MENU
+          </button>
+        </div>
+      </div>
     </div>
 
     <script src="audio.js"></script>
 
     <!-- MAIN GAME LOGIC ENGINE -->
     <script>
-        // Game Settings State
-        const settings = {
-            sensitivity: 1.5,
-            fov: 103,
-            targetColor: '#00f0ff',
-            crossDot: true,
-            crossLines: true,
-            crossSize: 10,
-            crossThick: 2,
-            crossGap: 4,
-            volume: 0.8
+      // Game Settings State
+      const settings = {
+        sensitivity: 1.5,
+        fov: 103,
+        targetColor: "#00f0ff",
+        crossDot: true,
+        crossLines: true,
+        crossSize: 10,
+        crossThick: 2,
+        crossGap: 4,
+        volume: 0.8,
+      };
+
+      // Game Playback State
+      const gameState = {
+        active: false,
+        mode: "gridshot", // gridshot, microflex, tracking, reflex
+        score: 0,
+        shots: 0,
+        hits: 0,
+        misses: 0,
+        startTime: 0,
+        duration: 60, // seconds
+        timeLeft: 60,
+        hitLogs: [], // {x, y, time}
+        reactionTimes: [], // ms
+      };
+
+      // Three.js Engine Variables
+      let scene, camera, renderer;
+      let targets = [];
+      const targetMeshes = [];
+      let particles = [];
+      let raycaster = new THREE.Raycaster();
+      let mouseCenter = new THREE.Vector2(0, 0);
+
+      // First-Person Camera Rotation (Euler Controls)
+      let pitch = 0;
+      let yaw = 0;
+      const maxPitch = Math.PI / 2 - 0.01;
+
+      // Init Canvas & 3D Scene
+      window.onload = function () {
+        initThree();
+        initSettingsUI();
+        drawCrosshair();
+        loadScoresTable();
+        requestRender();
+      };
+
+      function initThree() {
+        const canvas = document.getElementById("game-canvas");
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x05050a, 0.015);
+
+        camera = new THREE.PerspectiveCamera(
+          settings.fov,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000,
+        );
+        camera.position.set(0, 1.6, 0); // Eye level height
+
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: false,
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+        // Build Cyberpunk Arena
+        buildArena();
+
+        // Window Resize listener
+        window.addEventListener("resize", onWindowResize);
+
+        // Pointer Lock Event Handling
+        document.addEventListener("pointerlockchange", onPointerLockChange);
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mousedown", onMouseDown);
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && gameState.active) {
+            stopGame();
+          }
+        });
+      }
+
+      // Construct Grid Cyberpunk Arena Environment
+      function buildArena() {
+        // Ambient Light & Direct Glow Lights
+        const ambient = new THREE.AmbientLight(0x1e293b, 1.5);
+        scene.add(ambient);
+
+        const dirLight = new THREE.DirectionalLight(0x00f0ff, 1.0);
+        dirLight.position.set(0, 20, 10);
+        scene.add(dirLight);
+
+        // Grid Floor
+        const floorGrid = new THREE.GridHelper(60, 60, 0x00f0ff, 0x1e293b);
+        floorGrid.position.y = 0;
+        scene.add(floorGrid);
+
+        // Front Target Wall Backplate with Glowing Cyber Lines
+        const wallGeo = new THREE.PlaneGeometry(50, 25);
+        const wallMat = new THREE.MeshBasicMaterial({
+          color: 0x0a0f1d,
+          side: THREE.DoubleSide,
+        });
+        const wall = new THREE.Mesh(wallGeo, wallMat);
+        wall.position.set(0, 12.5, -20);
+        scene.add(wall);
+
+        // Decorative Wall Neon Border
+        const borderBox = new THREE.BoxHelper(wall, 0x00f0ff);
+        scene.add(borderBox);
+
+        // Side Accent Lighting Pillars
+        for (let x of [-25, 25]) {
+          const pillarGeo = new THREE.CylinderGeometry(0.3, 0.3, 25, 16);
+          const pillarMat = new THREE.MeshBasicMaterial({ color: 0xec4899 });
+          const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+          pillar.position.set(x, 12.5, -20);
+          scene.add(pillar);
+        }
+      }
+
+      // First Person Mouse Control Logic
+      function onMouseMove(e) {
+        if (document.pointerLockElement !== document.body) return;
+
+        const sens = settings.sensitivity * 0.002;
+        yaw -= e.movementX * sens;
+        pitch -= e.movementY * sens;
+
+        // Clamp pitch to prevent flipping upside down
+        pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+
+        // Apply Euler Rotation
+        camera.rotation.order = "YXZ";
+        camera.rotation.y = yaw;
+        camera.rotation.x = pitch;
+      }
+
+      // Handle Shooting / Target Clicking
+      function onMouseDown(e) {
+        if (document.pointerLockElement !== document.body || !gameState.active)
+          return;
+        if (e.button !== 0) return; // Left Click only
+
+        audioEngine.init();
+        gameState.shots++;
+
+        // Raycast directly through center of crosshair
+        raycaster.setFromCamera(mouseCenter, camera);
+        const intersects = raycaster.intersectObjects(targetMeshes, false);
+
+        if (intersects.length > 0) {
+          const targetObj = intersects[0].object.userData.target;
+
+          if (targetObj) {
+            onTargetHit(targetObj, intersects[0].point);
+          }
+        } else {
+          // Missed Shot
+          gameState.misses++;
+          audioEngine.playMiss();
+          updateHUD();
+        }
+      }
+
+      // Target Hit Dispatcher
+      function onTargetHit(targetObj, hitPoint) {
+        audioEngine.playHit();
+
+        // Record Heatmap Data (normalize hit position onto 2D wall canvas space)
+        gameState.hitLogs.push({
+          x: hitPoint.x,
+          y: hitPoint.y,
+        });
+
+        // Track reaction time from spawn
+        const reactTime = performance.now() - targetObj.spawnTime;
+        gameState.reactionTimes.push(reactTime);
+
+        if (gameState.mode === "tracking") {
+          // Continuous Tracking Drain
+          targetObj.hp -= 35;
+          audioEngine.playTrackingTick();
+          createHitSpark(hitPoint, 0x00f0ff);
+
+          if (targetObj.hp <= 0) {
+            gameState.hits++;
+            gameState.score += 500;
+            audioEngine.playKill();
+            createExplosion(targetObj.mesh.position, settings.targetColor);
+            respawnTarget(targetObj);
+          }
+        } else {
+          // Instakill modes (Gridshot, Microflex, Reflex)
+          gameState.hits++;
+          const speedBonus = Math.max(0, Math.floor(1000 - reactTime));
+          gameState.score += 1000 + speedBonus;
+          audioEngine.playKill();
+
+          createExplosion(targetObj.mesh.position, settings.targetColor);
+          respawnTarget(targetObj);
+        }
+
+        updateHUD();
+      }
+
+      // Create Neon Particle Explosion on Target Destruction
+      function createExplosion(pos, colorHex) {
+        const particleCount = 15;
+        const pGeo = new THREE.BufferGeometry();
+        const positions = [];
+        const velocities = [];
+
+        for (let i = 0; i < particleCount; i++) {
+          positions.push(pos.x, pos.y, pos.z);
+          velocities.push(
+            (Math.random() - 0.5) * 8,
+            (Math.random() - 0.5) * 8,
+            (Math.random() - 0.5) * 8,
+          );
+        }
+
+        pGeo.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(positions, 3),
+        );
+        const pMat = new THREE.PointsMaterial({
+          color: new THREE.Color(colorHex),
+          size: 0.25,
+          transparent: true,
+          opacity: 1.0,
+        });
+
+        const pSystem = new THREE.Points(pGeo, pMat);
+        scene.add(pSystem);
+
+        particles.push({
+          system: pSystem,
+          velocities: velocities,
+          created: performance.now(),
+        });
+      }
+
+      function createHitSpark(pos, colorHex) {
+        createExplosion(pos, colorHex);
+      }
+
+      // Target Spawner & Respawn Handler
+      function spawnTargetsForMode() {
+        clearTargets();
+
+        let count = 3;
+        let radius = 1.2;
+
+        if (gameState.mode === "gridshot") {
+          count = 3;
+          radius = 1.2;
+        } else if (gameState.mode === "microflex") {
+          count = 4;
+          radius = 0.45;
+        } else if (gameState.mode === "tracking") {
+          count = 1;
+          radius = 1.5;
+        } else if (gameState.mode === "reflex") {
+          count = 1;
+          radius = 0.9;
+        }
+
+        for (let i = 0; i < count; i++) {
+          spawnSingleTarget(radius);
+        }
+      }
+
+      function spawnSingleTarget(radius) {
+        const geo = new THREE.SphereGeometry(radius, 32, 32);
+        const mat = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(settings.targetColor),
+          emissive: new THREE.Color(settings.targetColor),
+          emissiveIntensity: 0.6,
+          roughness: 0.2,
+          metalness: 0.8,
+        });
+
+        const mesh = new THREE.Mesh(geo, mat);
+        const targetObj = {
+          mesh: mesh,
+          spawnTime: performance.now(),
+          hp: 100,
+          dir: new THREE.Vector3(
+            (Math.random() - 0.5) * 6,
+            (Math.random() - 0.5) * 6,
+            0,
+          ),
+        };
+        mesh.userData.target = targetObj;
+
+        positionTargetRandomly(targetObj);
+        scene.add(mesh);
+        targets.push(targetObj);
+        targetMeshes.push(mesh);
+      }
+
+      function positionTargetRandomly(targetObj) {
+        let xRange = 14;
+        let yRange = 8;
+        let yOffset = 10;
+
+        if (gameState.mode === "microflex") {
+          xRange = 8;
+          yRange = 4;
+        }
+
+        targetObj.mesh.position.set(
+          (Math.random() - 0.5) * xRange,
+          yOffset + (Math.random() - 0.5) * yRange,
+          -19.5,
+        );
+        targetObj.spawnTime = performance.now();
+        targetObj.hp = 100;
+      }
+
+      function respawnTarget(targetObj) {
+        positionTargetRandomly(targetObj);
+      }
+
+      function clearTargets() {
+        targets.forEach(({ mesh }) => {
+          scene.remove(mesh);
+          mesh.geometry.dispose();
+          mesh.material.dispose();
+        });
+        targets = [];
+        targetMeshes.length = 0;
+      }
+
+      // Pointer Lock Listeners
+      function onPointerLockChange() {
+        if (document.pointerLockElement !== document.body) {
+          if (gameState.active) {
+            pauseGame();
+          }
+        }
+      }
+
+      // Start / Stop Game Loop Controls
+      function startGame(modeName) {
+        audioEngine.init();
+        gameState.active = true;
+        gameState.mode = modeName;
+        gameState.score = 0;
+        gameState.shots = 0;
+        gameState.hits = 0;
+        gameState.misses = 0;
+        gameState.hitLogs = [];
+        gameState.reactionTimes = [];
+        gameState.startTime = performance.now();
+        gameState.timeLeft = gameState.duration;
+        lastFrameTime = gameState.startTime;
+
+        document.getElementById("main-menu").classList.add("hidden");
+        document.getElementById("summary-modal").classList.add("hidden");
+        document.getElementById("hud-overlay").classList.remove("hidden");
+
+        document.getElementById("hud-mode-name").innerText =
+          modeName.toUpperCase();
+
+        spawnTargetsForMode();
+        document.body.requestPointerLock();
+        requestRender();
+      }
+
+      function pauseGame() {
+        gameState.active = false;
+        document.getElementById("main-menu").classList.remove("hidden");
+      }
+
+      function stopGame() {
+        gameState.active = false;
+        document.exitPointerLock();
+        showSummaryModal();
+      }
+
+      // Live HUD Refresh
+      function updateHUD() {
+        document.getElementById("hud-score").innerText =
+          gameState.score.toLocaleString();
+
+        const total = gameState.shots || 1;
+        const acc = ((gameState.hits / total) * 100).toFixed(1);
+        document.getElementById("hud-accuracy").innerText = `${acc}%`;
+
+        const elapsedSec = Math.max(
+          0.1,
+          (performance.now() - gameState.startTime) / 1000,
+        );
+        const kps = (gameState.hits / elapsedSec).toFixed(2);
+        document.getElementById("hud-kps").innerText = kps;
+
+        const avgReact =
+          gameState.reactionTimes.length > 0
+            ? Math.round(
+                gameState.reactionTimes.reduce((a, b) => a + b, 0) /
+                  gameState.reactionTimes.length,
+              )
+            : 0;
+        document.getElementById("hud-reaction").innerText = `${avgReact} ms`;
+      }
+
+      // Game Animation / Render Loop
+      let lastFrameTime = performance.now();
+      let animationFrameId = null;
+
+      function requestRender() {
+        if (animationFrameId === null) {
+          animationFrameId = requestAnimationFrame(animate);
+        }
+      }
+
+      function animate() {
+        animationFrameId = null;
+
+        const now = performance.now();
+        const delta = (now - lastFrameTime) / 1000;
+        lastFrameTime = now;
+
+        if (gameState.active) {
+          // Update Game Timer
+          const elapsed = (now - gameState.startTime) / 1000;
+          gameState.timeLeft = Math.max(0, gameState.duration - elapsed);
+          document.getElementById("hud-timer").innerText =
+            `${gameState.timeLeft.toFixed(1)}s`;
+
+          if (gameState.timeLeft <= 0) {
+            stopGame();
+          }
+
+          // Handle Target Physics / Motion (Sphere Track Mode)
+          if (gameState.mode === "tracking") {
+            targets.forEach((t) => {
+              t.mesh.position.x += t.dir.x * delta;
+              t.mesh.position.y += t.dir.y * delta;
+
+              // Bounce off boundaries
+              if (Math.abs(t.mesh.position.x) > 10) t.dir.x *= -1;
+              if (t.mesh.position.y < 5 || t.mesh.position.y > 15)
+                t.dir.y *= -1;
+            });
+          }
+        }
+
+        updateParticles(now, delta);
+        renderer.render(scene, camera);
+
+        if (gameState.active || particles.length > 0) {
+          requestRender();
+        }
+      }
+
+      function updateParticles(now, delta) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const particle = particles[i];
+          const age = (now - particle.created) / 1000;
+
+          if (age > 0.4) {
+            scene.remove(particle.system);
+            particle.system.geometry.dispose();
+            particle.system.material.dispose();
+            particles.splice(i, 1);
+            continue;
+          }
+
+          const positions = particle.system.geometry.attributes.position.array;
+          for (let j = 0; j < positions.length; j += 3) {
+            positions[j] += particle.velocities[j] * delta;
+            positions[j + 1] += particle.velocities[j + 1] * delta;
+            positions[j + 2] += particle.velocities[j + 2] * delta;
+          }
+          particle.system.geometry.attributes.position.needsUpdate = true;
+          particle.system.material.opacity = 1 - age / 0.4;
+        }
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        requestRender();
+      }
+
+      // Crosshair Canvas Renderer
+      function drawCrosshair() {
+        const canvas = document.getElementById("crosshair-canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const size = parseInt(settings.crossSize);
+        const thick = parseInt(settings.crossThick);
+        const gap = parseInt(settings.crossGap);
+
+        ctx.fillStyle = settings.targetColor;
+        ctx.strokeStyle = settings.targetColor;
+        ctx.lineWidth = thick;
+
+        // Render Center Dot
+        if (settings.crossDot) {
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, thick, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Render Cross Lines
+        if (settings.crossLines) {
+          ctx.beginPath();
+          // Top
+          ctx.moveTo(centerX, centerY - gap);
+          ctx.lineTo(centerX, centerY - gap - size);
+          // Bottom
+          ctx.moveTo(centerX, centerY + gap);
+          ctx.lineTo(centerX, centerY + gap + size);
+          // Left
+          ctx.moveTo(centerX - gap, centerY);
+          ctx.lineTo(centerX - gap - size, centerY);
+          // Right
+          ctx.moveTo(centerX + gap, centerY);
+          ctx.lineTo(centerX + gap + size, centerY);
+          ctx.stroke();
+        }
+      }
+
+      // Settings UI Event Wireup
+      function initSettingsUI() {
+        // Main Tab Navigation
+        const tabs = ["play", "settings", "scores"];
+        tabs.forEach((tab) => {
+          document
+            .getElementById(`tab-${tab}`)
+            .addEventListener("click", () => {
+              tabs.forEach((t) => {
+                document.getElementById(`tab-${t}`).className =
+                  "px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all";
+                document.getElementById(`content-${t}`).classList.add("hidden");
+              });
+              document.getElementById(`tab-${tab}`).className =
+                "px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider transition-all bg-cyan-500 text-slate-950 shadow-md";
+              document
+                .getElementById(`content-${tab}`)
+                .classList.remove("hidden");
+            });
+        });
+
+        // Mode Selection Buttons
+        document.querySelectorAll(".mode-card").forEach((card) => {
+          card.addEventListener("click", () => {
+            const mode = card.getAttribute("data-mode");
+            startGame(mode);
+          });
+        });
+
+        // Sensitivity Preset Converter
+        const presetSelect = document.getElementById("setting-preset");
+        const gameSensInput = document.getElementById("setting-game-sens");
+        const sensSlider = document.getElementById("setting-sens");
+        const valSens = document.getElementById("val-sens");
+
+        const convertSens = () => {
+          const preset = presetSelect.value;
+          const val = parseFloat(gameSensInput.value) || 1.0;
+          let converted = val;
+
+          if (preset === "valorant") converted = val * 3.18;
+          else if (preset === "csgo") converted = val * 1.0;
+          else if (preset === "overwatch") converted = val * 0.3;
+          else if (preset === "rainbow") converted = val * 0.8;
+
+          settings.sensitivity = parseFloat(converted.toFixed(2));
+          sensSlider.value = settings.sensitivity;
+          valSens.innerText = settings.sensitivity.toFixed(2);
         };
 
-        // Game Playback State
-        const gameState = {
-            active: false,
-            mode: 'gridshot', // gridshot, microflex, tracking, reflex
-            score: 0,
-            shots: 0,
-            hits: 0,
-            misses: 0,
-            startTime: 0,
-            duration: 60, // seconds
-            timeLeft: 60,
-            hitLogs: [], // {x, y, time}
-            reactionTimes: [] // ms
-        };
-
-        // Three.js Engine Variables
-        let scene, camera, renderer;
-        let targets = [];
-        const targetMeshes = [];
-        let particles = [];
-        let raycaster = new THREE.Raycaster();
-        let mouseCenter = new THREE.Vector2(0, 0);
-
-        // First-Person Camera Rotation (Euler Controls)
-        let pitch = 0;
-        let yaw = 0;
-        const maxPitch = Math.PI / 2 - 0.01;
-
-        // Init Canvas & 3D Scene
-        window.onload = function() {
-            initThree();
-            initSettingsUI();
-            drawCrosshair();
-            loadScoresTable();
-            requestRender();
-        };
-
-        function initThree() {
-            const canvas = document.getElementById('game-canvas');
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x05050a, 0.015);
-
-            camera = new THREE.PerspectiveCamera(settings.fov, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.6, 0); // Eye level height
-
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-            // Build Cyberpunk Arena
-            buildArena();
-
-            // Window Resize listener
-            window.addEventListener('resize', onWindowResize);
-
-            // Pointer Lock Event Handling
-            document.addEventListener('pointerlockchange', onPointerLockChange);
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mousedown', onMouseDown);
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && gameState.active) {
-                    stopGame();
-                }
-            });
-        }
-
-        // Construct Grid Cyberpunk Arena Environment
-        function buildArena() {
-            // Ambient Light & Direct Glow Lights
-            const ambient = new THREE.AmbientLight(0x1e293b, 1.5);
-            scene.add(ambient);
-
-            const dirLight = new THREE.DirectionalLight(0x00f0ff, 1.0);
-            dirLight.position.set(0, 20, 10);
-            scene.add(dirLight);
-
-            // Grid Floor
-            const floorGrid = new THREE.GridHelper(60, 60, 0x00f0ff, 0x1e293b);
-            floorGrid.position.y = 0;
-            scene.add(floorGrid);
-
-            // Front Target Wall Backplate with Glowing Cyber Lines
-            const wallGeo = new THREE.PlaneGeometry(50, 25);
-            const wallMat = new THREE.MeshBasicMaterial({ color: 0x0a0f1d, side: THREE.DoubleSide });
-            const wall = new THREE.Mesh(wallGeo, wallMat);
-            wall.position.set(0, 12.5, -20);
-            scene.add(wall);
-
-            // Decorative Wall Neon Border
-            const borderBox = new THREE.BoxHelper(wall, 0x00f0ff);
-            scene.add(borderBox);
-
-            // Side Accent Lighting Pillars
-            for (let x of [-25, 25]) {
-                const pillarGeo = new THREE.CylinderGeometry(0.3, 0.3, 25, 16);
-                const pillarMat = new THREE.MeshBasicMaterial({ color: 0xec4899 });
-                const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-                pillar.position.set(x, 12.5, -20);
-                scene.add(pillar);
-            }
-        }
-
-        // First Person Mouse Control Logic
-        function onMouseMove(e) {
-            if (document.pointerLockElement !== document.body) return;
-
-            const sens = settings.sensitivity * 0.002;
-            yaw -= e.movementX * sens;
-            pitch -= e.movementY * sens;
-
-            // Clamp pitch to prevent flipping upside down
-            pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
-
-            // Apply Euler Rotation
-            camera.rotation.order = 'YXZ';
-            camera.rotation.y = yaw;
-            camera.rotation.x = pitch;
-        }
-
-        // Handle Shooting / Target Clicking
-        function onMouseDown(e) {
-            if (document.pointerLockElement !== document.body || !gameState.active) return;
-            if (e.button !== 0) return; // Left Click only
-
-            audioEngine.init();
-            gameState.shots++;
-
-            // Raycast directly through center of crosshair
-            raycaster.setFromCamera(mouseCenter, camera);
-            const intersects = raycaster.intersectObjects(targetMeshes, false);
-
-            if (intersects.length > 0) {
-                const targetObj = intersects[0].object.userData.target;
-
-                if (targetObj) {
-                    onTargetHit(targetObj, intersects[0].point);
-                }
-            } else {
-                // Missed Shot
-                gameState.misses++;
-                audioEngine.playMiss();
-                updateHUD();
-            }
-        }
-
-        // Target Hit Dispatcher
-        function onTargetHit(targetObj, hitPoint) {
-            audioEngine.playHit();
-
-            // Record Heatmap Data (normalize hit position onto 2D wall canvas space)
-            gameState.hitLogs.push({
-                x: hitPoint.x,
-                y: hitPoint.y
-            });
-
-            // Track reaction time from spawn
-            const reactTime = performance.now() - targetObj.spawnTime;
-            gameState.reactionTimes.push(reactTime);
-
-            if (gameState.mode === 'tracking') {
-                // Continuous Tracking Drain
-                targetObj.hp -= 35;
-                audioEngine.playTrackingTick();
-                createHitSpark(hitPoint, 0x00f0ff);
-
-                if (targetObj.hp <= 0) {
-                    gameState.hits++;
-                    gameState.score += 500;
-                    audioEngine.playKill();
-                    createExplosion(targetObj.mesh.position, settings.targetColor);
-                    respawnTarget(targetObj);
-                }
-            } else {
-                // Instakill modes (Gridshot, Microflex, Reflex)
-                gameState.hits++;
-                const speedBonus = Math.max(0, Math.floor(1000 - reactTime));
-                gameState.score += 1000 + speedBonus;
-                audioEngine.playKill();
-
-                createExplosion(targetObj.mesh.position, settings.targetColor);
-                respawnTarget(targetObj);
-            }
-
-            updateHUD();
-        }
-
-        // Create Neon Particle Explosion on Target Destruction
-        function createExplosion(pos, colorHex) {
-            const particleCount = 15;
-            const pGeo = new THREE.BufferGeometry();
-            const positions = [];
-            const velocities = [];
-
-            for (let i = 0; i < particleCount; i++) {
-                positions.push(pos.x, pos.y, pos.z);
-                velocities.push(
-                    (Math.random() - 0.5) * 8,
-                    (Math.random() - 0.5) * 8,
-                    (Math.random() - 0.5) * 8
-                );
-            }
-
-            pGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-            const pMat = new THREE.PointsMaterial({
-                color: new THREE.Color(colorHex),
-                size: 0.25,
-                transparent: true,
-                opacity: 1.0
-            });
-
-            const pSystem = new THREE.Points(pGeo, pMat);
-            scene.add(pSystem);
-
-            particles.push({
-                system: pSystem,
-                velocities: velocities,
-                created: performance.now()
-            });
-        }
-
-        function createHitSpark(pos, colorHex) {
-            createExplosion(pos, colorHex);
-        }
-
-        // Target Spawner & Respawn Handler
-        function spawnTargetsForMode() {
-            clearTargets();
-
-            let count = 3;
-            let radius = 1.2;
-
-            if (gameState.mode === 'gridshot') {
-                count = 3;
-                radius = 1.2;
-            } else if (gameState.mode === 'microflex') {
-                count = 4;
-                radius = 0.45;
-            } else if (gameState.mode === 'tracking') {
-                count = 1;
-                radius = 1.5;
-            } else if (gameState.mode === 'reflex') {
-                count = 1;
-                radius = 0.9;
-            }
-
-            for (let i = 0; i < count; i++) {
-                spawnSingleTarget(radius);
-            }
-        }
-
-        function spawnSingleTarget(radius) {
-            const geo = new THREE.SphereGeometry(radius, 32, 32);
-            const mat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(settings.targetColor),
-                emissive: new THREE.Color(settings.targetColor),
-                emissiveIntensity: 0.6,
-                roughness: 0.2,
-                metalness: 0.8
-            });
-
-            const mesh = new THREE.Mesh(geo, mat);
-            const targetObj = {
-                mesh: mesh,
-                spawnTime: performance.now(),
-                hp: 100,
-                dir: new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6, 0)
-            };
-            mesh.userData.target = targetObj;
-
-            positionTargetRandomly(targetObj);
-            scene.add(mesh);
-            targets.push(targetObj);
-            targetMeshes.push(mesh);
-        }
-
-        function positionTargetRandomly(targetObj) {
-            let xRange = 14;
-            let yRange = 8;
-            let yOffset = 10;
-
-            if (gameState.mode === 'microflex') {
-                xRange = 8;
-                yRange = 4;
-            }
-
-            targetObj.mesh.position.set(
-                (Math.random() - 0.5) * xRange,
-                yOffset + (Math.random() - 0.5) * yRange,
-                -19.5
-            );
-            targetObj.spawnTime = performance.now();
-            targetObj.hp = 100;
-        }
-
-        function respawnTarget(targetObj) {
-            positionTargetRandomly(targetObj);
-        }
-
-        function clearTargets() {
-            targets.forEach(({ mesh }) => {
-                scene.remove(mesh);
-                mesh.geometry.dispose();
-                mesh.material.dispose();
-            });
-            targets = [];
-            targetMeshes.length = 0;
-        }
-
-        // Pointer Lock Listeners
-        function onPointerLockChange() {
-            if (document.pointerLockElement !== document.body) {
-                if (gameState.active) {
-                    pauseGame();
-                }
-            }
-        }
-
-        // Start / Stop Game Loop Controls
-        function startGame(modeName) {
-            audioEngine.init();
-            gameState.active = true;
-            gameState.mode = modeName;
-            gameState.score = 0;
-            gameState.shots = 0;
-            gameState.hits = 0;
-            gameState.misses = 0;
-            gameState.hitLogs = [];
-            gameState.reactionTimes = [];
-            gameState.startTime = performance.now();
-            gameState.timeLeft = gameState.duration;
-            lastFrameTime = gameState.startTime;
-
-            document.getElementById('main-menu').classList.add('hidden');
-            document.getElementById('summary-modal').classList.add('hidden');
-            document.getElementById('hud-overlay').classList.remove('hidden');
-
-            document.getElementById('hud-mode-name').innerText = modeName.toUpperCase();
-            
-            spawnTargetsForMode();
-            document.body.requestPointerLock();
-            requestRender();
-        }
-
-        function pauseGame() {
-            gameState.active = false;
-            document.getElementById('main-menu').classList.remove('hidden');
-        }
-
-        function stopGame() {
-            gameState.active = false;
-            document.exitPointerLock();
-            showSummaryModal();
-        }
-
-        // Live HUD Refresh
-        function updateHUD() {
-            document.getElementById('hud-score').innerText = gameState.score.toLocaleString();
-            
-            const total = gameState.shots || 1;
-            const acc = ((gameState.hits / total) * 100).toFixed(1);
-            document.getElementById('hud-accuracy').innerText = `${acc}%`;
-
-            const elapsedSec = Math.max(0.1, (performance.now() - gameState.startTime) / 1000);
-            const kps = (gameState.hits / elapsedSec).toFixed(2);
-            document.getElementById('hud-kps').innerText = kps;
-
-            const avgReact = gameState.reactionTimes.length > 0 
-                ? Math.round(gameState.reactionTimes.reduce((a, b) => a + b, 0) / gameState.reactionTimes.length) 
-                : 0;
-            document.getElementById('hud-reaction').innerText = `${avgReact} ms`;
-        }
-
-        // Game Animation / Render Loop
-        let lastFrameTime = performance.now();
-        let animationFrameId = null;
-
-        function requestRender() {
-            if (animationFrameId === null) {
-                animationFrameId = requestAnimationFrame(animate);
-            }
-        }
-
-        function animate() {
-            animationFrameId = null;
-
-            const now = performance.now();
-            const delta = (now - lastFrameTime) / 1000;
-            lastFrameTime = now;
-
-            if (gameState.active) {
-                // Update Game Timer
-                const elapsed = (now - gameState.startTime) / 1000;
-                gameState.timeLeft = Math.max(0, gameState.duration - elapsed);
-                document.getElementById('hud-timer').innerText = `${gameState.timeLeft.toFixed(1)}s`;
-
-                if (gameState.timeLeft <= 0) {
-                    stopGame();
-                }
-
-                // Handle Target Physics / Motion (Sphere Track Mode)
-                if (gameState.mode === 'tracking') {
-                    targets.forEach(t => {
-                        t.mesh.position.x += t.dir.x * delta;
-                        t.mesh.position.y += t.dir.y * delta;
-
-                        // Bounce off boundaries
-                        if (Math.abs(t.mesh.position.x) > 10) t.dir.x *= -1;
-                        if (t.mesh.position.y < 5 || t.mesh.position.y > 15) t.dir.y *= -1;
-                    });
-                }
-
-            }
-
-            updateParticles(now, delta);
-            renderer.render(scene, camera);
-
-            if (gameState.active || particles.length > 0) {
-                requestRender();
-            }
-        }
-
-        function updateParticles(now, delta) {
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const particle = particles[i];
-                const age = (now - particle.created) / 1000;
-
-                if (age > 0.4) {
-                    scene.remove(particle.system);
-                    particle.system.geometry.dispose();
-                    particle.system.material.dispose();
-                    particles.splice(i, 1);
-                    continue;
-                }
-
-                const positions = particle.system.geometry.attributes.position.array;
-                for (let j = 0; j < positions.length; j += 3) {
-                    positions[j] += particle.velocities[j] * delta;
-                    positions[j + 1] += particle.velocities[j + 1] * delta;
-                    positions[j + 2] += particle.velocities[j + 2] * delta;
-                }
-                particle.system.geometry.attributes.position.needsUpdate = true;
-                particle.system.material.opacity = 1 - (age / 0.4);
-            }
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
+        presetSelect.addEventListener("change", convertSens);
+        gameSensInput.addEventListener("input", convertSens);
+
+        sensSlider.addEventListener("input", (e) => {
+          settings.sensitivity = parseFloat(e.target.value);
+          valSens.innerText = settings.sensitivity.toFixed(2);
+        });
+
+        // FOV Slider
+        const fovSlider = document.getElementById("setting-fov");
+        fovSlider.addEventListener("input", (e) => {
+          settings.fov = parseInt(e.target.value);
+          document.getElementById("val-fov").innerText = `${settings.fov}°`;
+          if (camera) {
+            camera.fov = settings.fov;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
             requestRender();
-        }
+          }
+        });
 
-        // Crosshair Canvas Renderer
-        function drawCrosshair() {
-            const canvas = document.getElementById('crosshair-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const size = parseInt(settings.crossSize);
-            const thick = parseInt(settings.crossThick);
-            const gap = parseInt(settings.crossGap);
-
-            ctx.fillStyle = settings.targetColor;
-            ctx.strokeStyle = settings.targetColor;
-            ctx.lineWidth = thick;
-
-            // Render Center Dot
-            if (settings.crossDot) {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, thick, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Render Cross Lines
-            if (settings.crossLines) {
-                ctx.beginPath();
-                // Top
-                ctx.moveTo(centerX, centerY - gap);
-                ctx.lineTo(centerX, centerY - gap - size);
-                // Bottom
-                ctx.moveTo(centerX, centerY + gap);
-                ctx.lineTo(centerX, centerY + gap + size);
-                // Left
-                ctx.moveTo(centerX - gap, centerY);
-                ctx.lineTo(centerX - gap - size, centerY);
-                // Right
-                ctx.moveTo(centerX + gap, centerY);
-                ctx.lineTo(centerX + gap + size, centerY);
-                ctx.stroke();
-            }
-        }
-
-        // Settings UI Event Wireup
-        function initSettingsUI() {
-            // Main Tab Navigation
-            const tabs = ['play', 'settings', 'scores'];
-            tabs.forEach(tab => {
-                document.getElementById(`tab-${tab}`).addEventListener('click', () => {
-                    tabs.forEach(t => {
-                        document.getElementById(`tab-${t}`).className = "px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider text-slate-400 hover:text-white transition-all";
-                        document.getElementById(`content-${t}`).classList.add('hidden');
-                    });
-                    document.getElementById(`tab-${tab}`).className = "px-5 py-2 rounded-lg font-orbitron font-semibold text-xs tracking-wider transition-all bg-cyan-500 text-slate-950 shadow-md";
-                    document.getElementById(`content-${tab}`).classList.remove('hidden');
-                });
+        // Color Picker Buttons
+        document
+          .querySelectorAll("#target-color-picker button")
+          .forEach((btn) => {
+            btn.addEventListener("click", () => {
+              document
+                .querySelectorAll("#target-color-picker button")
+                .forEach(
+                  (b) =>
+                    (b.className =
+                      "w-10 h-10 rounded-lg border-2 border-transparent hover:border-white"),
+                );
+              btn.className =
+                "w-10 h-10 rounded-lg border-2 border-white ring-2 ring-cyan-400/50";
+              settings.targetColor = btn.getAttribute("data-color");
+              drawCrosshair();
             });
+          });
 
-            // Mode Selection Buttons
-            document.querySelectorAll('.mode-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const mode = card.getAttribute('data-mode');
-                    startGame(mode);
-                });
-            });
+        // Crosshair Checkboxes & Sliders
+        ["setting-cross-dot", "setting-cross-lines"].forEach((id) => {
+          document.getElementById(id).addEventListener("change", (e) => {
+            if (id === "setting-cross-dot")
+              settings.crossDot = e.target.checked;
+            if (id === "setting-cross-lines")
+              settings.crossLines = e.target.checked;
+            drawCrosshair();
+          });
+        });
 
-            // Sensitivity Preset Converter
-            const presetSelect = document.getElementById('setting-preset');
-            const gameSensInput = document.getElementById('setting-game-sens');
-            const sensSlider = document.getElementById('setting-sens');
-            const valSens = document.getElementById('val-sens');
+        [
+          "setting-cross-size",
+          "setting-cross-thick",
+          "setting-cross-gap",
+        ].forEach((id) => {
+          document.getElementById(id).addEventListener("input", (e) => {
+            if (id === "setting-cross-size")
+              settings.crossSize = e.target.value;
+            if (id === "setting-cross-thick")
+              settings.crossThick = e.target.value;
+            if (id === "setting-cross-gap") settings.crossGap = e.target.value;
+            drawCrosshair();
+          });
+        });
 
-            const convertSens = () => {
-                const preset = presetSelect.value;
-                const val = parseFloat(gameSensInput.value) || 1.0;
-                let converted = val;
+        // Master Volume
+        document
+          .getElementById("setting-volume")
+          .addEventListener("input", (e) => {
+            settings.volume = e.target.value / 100;
+            audioEngine.volume = settings.volume;
+            document.getElementById("val-volume").innerText =
+              `${e.target.value}%`;
+          });
 
-                if (preset === 'valorant') converted = val * 3.18;
-                else if (preset === 'csgo') converted = val * 1.0;
-                else if (preset === 'overwatch') converted = val * 0.3;
-                else if (preset === 'rainbow') converted = val * 0.8;
+        // Summary Buttons
+        document.getElementById("btn-replay").addEventListener("click", () => {
+          startGame(gameState.mode);
+        });
 
-                settings.sensitivity = parseFloat(converted.toFixed(2));
-                sensSlider.value = settings.sensitivity;
-                valSens.innerText = settings.sensitivity.toFixed(2);
-            };
+        document
+          .getElementById("btn-summary-menu")
+          .addEventListener("click", () => {
+            document.getElementById("summary-modal").classList.add("hidden");
+            document.getElementById("main-menu").classList.remove("hidden");
+          });
 
-            presetSelect.addEventListener('change', convertSens);
-            gameSensInput.addEventListener('input', convertSens);
-
-            sensSlider.addEventListener('input', (e) => {
-                settings.sensitivity = parseFloat(e.target.value);
-                valSens.innerText = settings.sensitivity.toFixed(2);
-            });
-
-            // FOV Slider
-            const fovSlider = document.getElementById('setting-fov');
-            fovSlider.addEventListener('input', (e) => {
-                settings.fov = parseInt(e.target.value);
-                document.getElementById('val-fov').innerText = `${settings.fov}°`;
-                if (camera) {
-                    camera.fov = settings.fov;
-                    camera.updateProjectionMatrix();
-                    requestRender();
-                }
-            });
-
-            // Color Picker Buttons
-            document.querySelectorAll('#target-color-picker button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('#target-color-picker button').forEach(b => b.className = "w-10 h-10 rounded-lg border-2 border-transparent hover:border-white");
-                    btn.className = "w-10 h-10 rounded-lg border-2 border-white ring-2 ring-cyan-400/50";
-                    settings.targetColor = btn.getAttribute('data-color');
-                    drawCrosshair();
-                });
-            });
-
-            // Crosshair Checkboxes & Sliders
-            ['setting-cross-dot', 'setting-cross-lines'].forEach(id => {
-                document.getElementById(id).addEventListener('change', (e) => {
-                    if (id === 'setting-cross-dot') settings.crossDot = e.target.checked;
-                    if (id === 'setting-cross-lines') settings.crossLines = e.target.checked;
-                    drawCrosshair();
-                });
-            });
-
-            ['setting-cross-size', 'setting-cross-thick', 'setting-cross-gap'].forEach(id => {
-                document.getElementById(id).addEventListener('input', (e) => {
-                    if (id === 'setting-cross-size') settings.crossSize = e.target.value;
-                    if (id === 'setting-cross-thick') settings.crossThick = e.target.value;
-                    if (id === 'setting-cross-gap') settings.crossGap = e.target.value;
-                    drawCrosshair();
-                });
-            });
-
-            // Master Volume
-            document.getElementById('setting-volume').addEventListener('input', (e) => {
-                settings.volume = e.target.value / 100;
-                audioEngine.volume = settings.volume;
-                document.getElementById('val-volume').innerText = `${e.target.value}%`;
-            });
-
-            // Summary Buttons
-            document.getElementById('btn-replay').addEventListener('click', () => {
-                startGame(gameState.mode);
-            });
-
-            document.getElementById('btn-summary-menu').addEventListener('click', () => {
-                document.getElementById('summary-modal').classList.add('hidden');
-                document.getElementById('main-menu').classList.remove('hidden');
-            });
-
-            document.getElementById('btn-clear-scores').addEventListener('click', () => {
-                localStorage.removeItem('aimlabs_scores');
-                loadScoresTable();
-            });
-        }
-
-        // Detailed Post-Game Summary Modal & Heatmap Rendering
-        function showSummaryModal() {
-            document.getElementById('hud-overlay').classList.add('hidden');
-            document.getElementById('summary-modal').classList.remove('hidden');
-
-            const totalShots = gameState.shots || 1;
-            const accuracy = ((gameState.hits / totalShots) * 100).toFixed(1);
-            const elapsed = Math.max(0.1, (performance.now() - gameState.startTime) / 1000);
-            const kps = (gameState.hits / elapsed).toFixed(2);
-            const avgTTK = gameState.reactionTimes.length > 0 
-                ? Math.round(gameState.reactionTimes.reduce((a, b) => a + b, 0) / gameState.reactionTimes.length) 
-                : 0;
-
-            // Fill Modal Summary Fields
-            document.getElementById('summary-mode-title').innerText = gameState.mode.toUpperCase();
-            document.getElementById('sum-score').innerText = gameState.score.toLocaleString();
-            document.getElementById('sum-accuracy').innerText = `${accuracy}%`;
-            document.getElementById('sum-kps').innerText = kps;
-            document.getElementById('sum-ttk').innerText = `${avgTTK} ms`;
-
-            document.getElementById('sum-shots').innerText = gameState.shots;
-            document.getElementById('sum-hits').innerText = gameState.hits;
-            document.getElementById('sum-misses').innerText = gameState.misses;
-            document.getElementById('sum-consistency').innerText = `${Math.min(99.9, parseFloat(accuracy) + 2).toFixed(1)}%`;
-            document.getElementById('sum-acc-bar').style.width = `${accuracy}%`;
-
-            // Calculate Performance Rank
-            const rankInfo = getRankRating(gameState.score, parseFloat(accuracy));
-            document.getElementById('rank-title').innerText = rankInfo.title;
-            document.getElementById('rank-title').className = `text-lg font-orbitron font-bold ${rankInfo.color}`;
-            document.getElementById('rank-icon').className = `text-3xl ${rankInfo.color}`;
-
-            // Draw Spatial Hit Heatmap
-            renderSpatialHeatmap();
-
-            // Save Entry to LocalStorage
-            saveScoreRecord({
-                mode: gameState.mode.toUpperCase(),
-                score: gameState.score,
-                accuracy: `${accuracy}%`,
-                kps: kps,
-                rank: rankInfo.title,
-                date: new Date().toLocaleDateString()
-            });
-        }
-
-        function getRankRating(score, accuracy) {
-            if (score > 75000 && accuracy >= 90) return { title: 'GRANDMASTER', color: 'text-purple-400' };
-            if (score > 55000 && accuracy >= 80) return { title: 'DIAMOND I', color: 'text-cyan-400' };
-            if (score > 35000 && accuracy >= 70) return { title: 'EMERALD II', color: 'text-emerald-400' };
-            if (score > 20000) return { title: 'RUBY III', color: 'text-pink-400' };
-            return { title: 'GOLD I', color: 'text-yellow-400' };
-        }
-
-        function renderSpatialHeatmap() {
-            const canvas = document.getElementById('heatmap-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#05050a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Target Area Grid Overlay
-            ctx.strokeStyle = 'rgba(6, 182, 212, 0.15)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x < canvas.width; x += 30) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, canvas.height);
-                ctx.stroke();
-            }
-            for (let y = 0; y < canvas.height; y += 30) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
-
-            // Draw Heatmap Points
-            gameState.hitLogs.forEach(hit => {
-                // Map spatial 3D bounds [-14, 14] and [5, 15] to 2D canvas coordinates
-                const cx = ((hit.x + 14) / 28) * canvas.width;
-                const cy = canvas.height - (((hit.y - 5) / 10) * canvas.height);
-
-                const grad = ctx.createRadialGradient(cx, cy, 1, cx, cy, 18);
-                grad.addColorStop(0, 'rgba(6, 182, 212, 0.8)');
-                grad.addColorStop(0.5, 'rgba(236, 72, 153, 0.4)');
-                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-                ctx.fillStyle = grad;
-                ctx.beginPath();
-                ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-
-        // Leaderboard LocalStorage Management
-        function saveScoreRecord(record) {
-            let scores = JSON.parse(localStorage.getItem('aimlabs_scores') || '[]');
-            scores.unshift(record);
-            if (scores.length > 20) scores.pop();
-            localStorage.setItem('aimlabs_scores', JSON.stringify(scores));
+        document
+          .getElementById("btn-clear-scores")
+          .addEventListener("click", () => {
+            localStorage.removeItem("aimlabs_scores");
             loadScoresTable();
+          });
+      }
+
+      // Detailed Post-Game Summary Modal & Heatmap Rendering
+      function showSummaryModal() {
+        document.getElementById("hud-overlay").classList.add("hidden");
+        document.getElementById("summary-modal").classList.remove("hidden");
+
+        const totalShots = gameState.shots || 1;
+        const accuracy = ((gameState.hits / totalShots) * 100).toFixed(1);
+        const elapsed = Math.max(
+          0.1,
+          (performance.now() - gameState.startTime) / 1000,
+        );
+        const kps = (gameState.hits / elapsed).toFixed(2);
+        const avgTTK =
+          gameState.reactionTimes.length > 0
+            ? Math.round(
+                gameState.reactionTimes.reduce((a, b) => a + b, 0) /
+                  gameState.reactionTimes.length,
+              )
+            : 0;
+
+        // Fill Modal Summary Fields
+        document.getElementById("summary-mode-title").innerText =
+          gameState.mode.toUpperCase();
+        document.getElementById("sum-score").innerText =
+          gameState.score.toLocaleString();
+        document.getElementById("sum-accuracy").innerText = `${accuracy}%`;
+        document.getElementById("sum-kps").innerText = kps;
+        document.getElementById("sum-ttk").innerText = `${avgTTK} ms`;
+
+        document.getElementById("sum-shots").innerText = gameState.shots;
+        document.getElementById("sum-hits").innerText = gameState.hits;
+        document.getElementById("sum-misses").innerText = gameState.misses;
+        document.getElementById("sum-consistency").innerText =
+          `${Math.min(99.9, parseFloat(accuracy) + 2).toFixed(1)}%`;
+        document.getElementById("sum-acc-bar").style.width = `${accuracy}%`;
+
+        // Calculate Performance Rank
+        const rankInfo = getRankRating(gameState.score, parseFloat(accuracy));
+        document.getElementById("rank-title").innerText = rankInfo.title;
+        document.getElementById("rank-title").className =
+          `text-lg font-orbitron font-bold ${rankInfo.color}`;
+        document.getElementById("rank-icon").className =
+          `text-3xl ${rankInfo.color}`;
+
+        // Draw Spatial Hit Heatmap
+        renderSpatialHeatmap();
+
+        // Save Entry to LocalStorage
+        saveScoreRecord({
+          mode: gameState.mode.toUpperCase(),
+          score: gameState.score,
+          accuracy: `${accuracy}%`,
+          kps: kps,
+          rank: rankInfo.title,
+          date: new Date().toLocaleDateString(),
+        });
+      }
+
+      function getRankRating(score, accuracy) {
+        if (score > 75000 && accuracy >= 90)
+          return { title: "GRANDMASTER", color: "text-purple-400" };
+        if (score > 55000 && accuracy >= 80)
+          return { title: "DIAMOND I", color: "text-cyan-400" };
+        if (score > 35000 && accuracy >= 70)
+          return { title: "EMERALD II", color: "text-emerald-400" };
+        if (score > 20000) return { title: "RUBY III", color: "text-pink-400" };
+        return { title: "GOLD I", color: "text-yellow-400" };
+      }
+
+      function renderSpatialHeatmap() {
+        const canvas = document.getElementById("heatmap-canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#05050a";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Target Area Grid Overlay
+        ctx.strokeStyle = "rgba(6, 182, 212, 0.15)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 30) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, canvas.height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 30) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
         }
 
-        function loadScoresTable() {
-            const scores = JSON.parse(localStorage.getItem('aimlabs_scores') || '[]');
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
+        // Draw Heatmap Points
+        gameState.hitLogs.forEach((hit) => {
+          // Map spatial 3D bounds [-14, 14] and [5, 15] to 2D canvas coordinates
+          const cx = ((hit.x + 14) / 28) * canvas.width;
+          const cy = canvas.height - ((hit.y - 5) / 10) * canvas.height;
 
-            if (scores.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No training sessions recorded yet. Complete a task to view scores!</td></tr>`;
-                return;
-            }
+          const grad = ctx.createRadialGradient(cx, cy, 1, cx, cy, 18);
+          grad.addColorStop(0, "rgba(6, 182, 212, 0.8)");
+          grad.addColorStop(0.5, "rgba(236, 72, 153, 0.4)");
+          grad.addColorStop(1, "rgba(0, 0, 0, 0)");
 
-            scores.forEach(s => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-900/40 transition-colors border-b border-slate-800/40";
-                tr.innerHTML = `
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      // Leaderboard LocalStorage Management
+      function saveScoreRecord(record) {
+        let scores = JSON.parse(localStorage.getItem("aimlabs_scores") || "[]");
+        scores.unshift(record);
+        if (scores.length > 20) scores.pop();
+        localStorage.setItem("aimlabs_scores", JSON.stringify(scores));
+        loadScoresTable();
+      }
+
+      function loadScoresTable() {
+        const scores = JSON.parse(
+          localStorage.getItem("aimlabs_scores") || "[]",
+        );
+        const tbody = document.getElementById("leaderboard-body");
+        tbody.innerHTML = "";
+
+        if (scores.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">No training sessions recorded yet. Complete a task to view scores!</td></tr>`;
+          return;
+        }
+
+        scores.forEach((s) => {
+          const tr = document.createElement("tr");
+          tr.className =
+            "hover:bg-slate-900/40 transition-colors border-b border-slate-800/40";
+          tr.innerHTML = `
                     <td class="p-4 font-orbitron font-bold text-cyan-400">${s.mode}</td>
                     <td class="p-4 font-orbitron text-white">${s.score.toLocaleString()}</td>
                     <td class="p-4">${s.accuracy}</td>
@@ -1148,9 +1641,9 @@
                     <td class="p-4 font-orbitron text-xs font-bold text-yellow-400">${s.rank}</td>
                     <td class="p-4 text-slate-500 text-xs">${s.date}</td>
                 `;
-                tbody.appendChild(tr);
-            });
-        }
+          tbody.appendChild(tr);
+        });
+      }
     </script>
-</body>
+  </body>
 </html>
