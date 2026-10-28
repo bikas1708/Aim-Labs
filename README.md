@@ -6,7 +6,7 @@ A browser-based 3D aim trainer with four short practice scenarios, configurable 
 
 ### Option 1: Open the page directly
 
-Open `aimlabs_web_cyber_aim_trainer.html` in a recent desktop browser. An internet connection is needed to load the page's CDN-hosted libraries, fonts, and icons.
+Open `index.html` in a recent desktop browser. An internet connection is needed to load the page's CDN-hosted libraries, fonts, and icons.
 
 ### Option 2: Run a local web server
 
@@ -22,7 +22,7 @@ If `py` is not available but Python is installed, use:
 python -m http.server 8000
 ```
 
-Then open <http://localhost:8000/aimlabs_web_cyber_aim_trainer.html>. Stop the server with `Ctrl+C`.
+Then open <http://localhost:8000/>. The server serves `index.html` as the home page. Stop the server with `Ctrl+C`.
 
 No build step or package installation is required. Keep the HTML, CSS, and JavaScript files together in the project folder so the page can load its local assets.
 
@@ -33,7 +33,7 @@ No build step or package installation is required. Keep the HTML, CSS, and JavaS
 3. Aim with the mouse and click the **left mouse button** to shoot. In Sphere Track, keep clicking the moving target to drain its health.
 4. Each task lasts 60 seconds. When the timer ends, review your score, accuracy, kills per second, reaction time, and hit heatmap.
 5. Choose **REPLAY TASK** to run that scenario again or **MAIN MENU** to choose another.
-6. Press **Esc** to release the pointer and return to the menu.
+6. Press **Esc** to end the current task, release the pointer, and open the results summary.
 
 Use the **SETTINGS** tab before starting to adjust sensitivity, field of view, target color, crosshair, and audio volume. To compare sessions, keep your sensitivity and field of view consistent.
 
@@ -52,7 +52,7 @@ The post-session leaderboard stores up to 20 score records in this browser's loc
 
 ## Project files
 
-- `aimlabs_web_cyber_aim_trainer.html` — page structure and game engine.
+- `index.html` — page structure and game engine.
 - `styles.css` — custom page styling.
 - `audio.js` — synthesized hit, miss, and tracking sounds.
 
